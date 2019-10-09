@@ -614,12 +614,12 @@ package body LSP.Ada_Handlers is
       ------------------------
 
       procedure Resolve_In_Context (C : Context_Access) is
-         Name_Node : constant Name := LSP.Lal_Utils.Get_Node_As_Name
+         Name_Node       : constant Name := LSP.Lal_Utils.Get_Node_As_Name
            (C.Get_Node_At (Value));
-         Definition : Defining_Name;
-         Other_Part : Defining_Name;
+         Definition      : Defining_Name;
+         Other_Part      : Defining_Name;
          Manual_Fallback : Defining_Name;
-
+         Decl            : Basic_Decl;
       begin
          if Name_Node = No_Name then
             return;
@@ -634,6 +634,7 @@ package body LSP.Ada_Handlers is
 
             if Definition /= No_Defining_Name then
                Append_Location (Response.result, Definition);
+               Decl := Definition.P_Basic_Decl;
             end if;
          else  --  If we are on a defining_name already
             Other_Part := Find_Next_Part (Definition, Self.Trace);
@@ -659,8 +660,24 @@ package body LSP.Ada_Handlers is
                   Imprecise := True;
                   Append_Location (Response.result, Manual_Fallback);
                end if;
+
+               Decl := Other_Part.P_Basic_Decl;
             end if;
          end if;
+
+         for C of Self.Contexts loop
+            declare
+               Is_Imprecise     : Boolean;
+               Overriding_Subps : constant Basic_Decl_Array :=
+                                    C.Find_All_Overrides
+                                      (Decl              => Decl,
+                                       Imprecise_Results => Is_Imprecise);
+            begin
+               for Subp of Overriding_Subps loop
+                  Append_Location (Response.result, Subp);
+               end loop;
+            end;
+         end loop;
       end Resolve_In_Context;
 
    begin

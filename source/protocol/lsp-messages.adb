@@ -1789,6 +1789,8 @@ package body LSP.Messages is
       dynamicRegistration'Read (S, V.symbol);
       JS.Key ("executeCommand");
       dynamicRegistration'Read (S, V.executeCommand);
+      Read_Optional_Boolean (JS, +"workspaceFolders", V.workspaceFolders);
+      Read_Optional_Boolean (JS, +"configuration", V.configuration);
       JS.End_Object;
    end Read_WorkspaceClientCapabilities;
 
@@ -3499,6 +3501,8 @@ package body LSP.Messages is
       dynamicRegistration'Write (S, V.symbol);
       JS.Key ("executeCommand");
       dynamicRegistration'Write (S, V.executeCommand);
+      Write_Optional_Boolean (JS, +"workspaceFolders", V.workspaceFolders);
+      Write_Optional_Boolean (JS, +"configuration", V.configuration);
       JS.End_Object;
    end Write_WorkspaceClientCapabilities;
 

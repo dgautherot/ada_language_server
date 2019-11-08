@@ -349,6 +349,28 @@ package body LSP.Messages is
       end if;
    end Read_CodeActionKind;
 
+   ----------------------------------------------
+   -- Read_codeActionLiteralSupport_Capability --
+   ----------------------------------------------
+
+   procedure Read_codeActionLiteralSupport_Capability
+     (S : access Ada.Streams.Root_Stream_Type'Class;
+      V : out codeActionLiteralSupport_Capability)
+   is
+      JS : LSP.JSON_Streams.JSON_Stream'Class renames
+        LSP.JSON_Streams.JSON_Stream'Class (S.all);
+   begin
+      JS.Start_Object;
+
+      JS.Key ("codeActionKind");
+      JS.Start_Object;
+      JS.Key ("valueSet");
+      CodeActionKindSet'Read (S, V.codeActionKind);
+      JS.End_Object;
+
+      JS.End_Object;
+   end Read_codeActionLiteralSupport_Capability;
+
    ---------------------------
    -- Read_CodeActionParams --
    ---------------------------
@@ -369,6 +391,26 @@ package body LSP.Messages is
       CodeActionContext'Read (S, V.context);
       JS.End_Object;
    end Read_CodeActionParams;
+
+   --------------------------------
+   -- Read_codeAction_Capability --
+   --------------------------------
+
+   procedure Read_codeAction_Capability
+     (S : access Ada.Streams.Root_Stream_Type'Class;
+      V : out codeAction_Capability)
+   is
+      JS : LSP.JSON_Streams.JSON_Stream'Class renames
+        LSP.JSON_Streams.JSON_Stream'Class (S.all);
+   begin
+      JS.Start_Object;
+      Read_Optional_Boolean
+        (JS, +"dynamicRegistration", V.dynamicRegistration);
+      JS.Key ("codeActionLiteralSupport");
+      Optional_codeActionLiteralSupport_Capability'Read
+        (S, V.codeActionLiteralSupport);
+      JS.End_Object;
+   end Read_codeAction_Capability;
 
    --------------------------
    -- Read_CodeLensOptions --
@@ -1849,7 +1891,7 @@ package body LSP.Messages is
       JS.Key ("implementation");
       Optional_implementation_Capability'Read (S, V.implementation);
       JS.Key ("codeAction");
-      dynamicRegistration'Read (S, V.codeAction);
+      Optional_codeAction_Capability'Read (S, V.codeAction);
       JS.Key ("codeLens");
       dynamicRegistration'Read (S, V.codeLens);
       JS.Key ("documentLink");
@@ -2360,6 +2402,28 @@ package body LSP.Messages is
       JS.Write (GNATCOLL.JSON.Create (Image (V)));
    end Write_CodeActionKind;
 
+   -----------------------------------------------
+   -- Write_codeActionLiteralSupport_Capability --
+   -----------------------------------------------
+
+   procedure Write_codeActionLiteralSupport_Capability
+     (S : access Ada.Streams.Root_Stream_Type'Class;
+      V : codeActionLiteralSupport_Capability)
+   is
+      JS : LSP.JSON_Streams.JSON_Stream'Class renames
+        LSP.JSON_Streams.JSON_Stream'Class (S.all);
+   begin
+      JS.Start_Object;
+
+      JS.Key ("codeActionKind");
+      JS.Start_Object;
+      JS.Key ("valueSet");
+      CodeActionKindSet'Write (S, V.codeActionKind);
+      JS.End_Object;
+
+      JS.End_Object;
+   end Write_codeActionLiteralSupport_Capability;
+
    ----------------------------
    -- Write_CodeActionParams --
    ----------------------------
@@ -2380,6 +2444,26 @@ package body LSP.Messages is
       CodeActionContext'Write (S, V.context);
       JS.End_Object;
    end Write_CodeActionParams;
+
+   ---------------------------------
+   -- Write_codeAction_Capability --
+   ---------------------------------
+
+   procedure Write_codeAction_Capability
+     (S : access Ada.Streams.Root_Stream_Type'Class;
+      V : codeAction_Capability)
+   is
+      JS : LSP.JSON_Streams.JSON_Stream'Class renames
+        LSP.JSON_Streams.JSON_Stream'Class (S.all);
+   begin
+      JS.Start_Object;
+      Write_Optional_Boolean
+        (JS, +"dynamicRegistration", V.dynamicRegistration);
+      JS.Key ("codeActionLiteralSupport");
+      Optional_codeActionLiteralSupport_Capability'Write
+        (S, V.codeActionLiteralSupport);
+      JS.End_Object;
+   end Write_codeAction_Capability;
 
    ---------------------------
    -- Write_CodeLensOptions --
@@ -3910,7 +3994,7 @@ package body LSP.Messages is
       JS.Key ("implementation");
       Optional_implementation_Capability'Write (S, V.implementation);
       JS.Key ("codeAction");
-      dynamicRegistration'Write (S, V.codeAction);
+      Optional_codeAction_Capability'Write (S, V.codeAction);
       JS.Key ("codeLens");
       dynamicRegistration'Write (S, V.codeLens);
       JS.Key ("documentLink");

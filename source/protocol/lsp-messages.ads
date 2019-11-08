@@ -134,6 +134,7 @@ package LSP.Messages is
    --
    --	// Defined by the protocol.
    --	export const RequestCancelled: number = -32800;
+   --	export const ContentModified: number = -32801;
    --}
    --```
    type ErrorCodes is
@@ -146,7 +147,8 @@ package LSP.Messages is
       serverErrorEnd,
       ServerNotInitialized,
       UnknownErrorCode,
-      RequestCancelled);
+      RequestCancelled,
+      ContentModified);
 
    type ResponseError is record
       code: ErrorCodes;

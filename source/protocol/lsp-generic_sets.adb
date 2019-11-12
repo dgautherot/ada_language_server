@@ -56,11 +56,6 @@ package body LSP.Generic_Sets is
       JS : LSP.JSON_Streams.JSON_Stream'Class renames
         LSP.JSON_Streams.JSON_Stream'Class (S.all);
    begin
-      if V = (Element => False) then
-         JS.Write (GNATCOLL.JSON.Create (GNATCOLL.JSON.Empty_Array));
-         return;
-      end if;
-
       JS.Start_Array;
 
       for K in V'Range loop
